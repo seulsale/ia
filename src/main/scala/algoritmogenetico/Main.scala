@@ -12,21 +12,22 @@ object Main extends App {
    * @param individuals the size of the population
    * @param chromosomes the quantity of chromosomes per individual
    */
-  def generatePopulation(individuals: Int, chromosomes: Int): Unit = {
+  def generatePopulation(individuals: Int, chromosomes: Int): List[Seq[Int]] = {
     val population = new ListBuffer[Seq[Int]]()
     for (individual <- 1 to individuals) {
       population += Seq.fill(chromosomes) {
         Random.between(0, 2)
       }
     }
-    val populationList = population.toList
-    populationList foreach println
+    population.toList
   }
 
-  val data = Source.fromFile("C:\\Users\\sergi\\IdeaProjects\\com.seulsale.ia\\src\\main\\scala\\algoritmogenetico\\datos.csv")
-  val iter = data.getLines().drop(1).map(_.split(",")) // Get table containing calories and weight values from csv file
+  val data = Source.fromResource("datos.csv").getLines().drop(1).map(_.split(",")) // Get table containing calories and weight values from csv file
 
-  generatePopulation(4, 8)
+  val population = generatePopulation(4, 8)
 
-  data.close()
+  for (item <- data) {
+    item foreach println
+  }
+  println(population)
 }
