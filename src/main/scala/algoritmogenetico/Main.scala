@@ -1,8 +1,8 @@
 package algoritmogenetico
 
+import scala.collection.mutable.ListBuffer
 import scala.io.Source
 import scala.util.Random
-import scala.collection.mutable.ListBuffer
 
 object Main extends App {
 
@@ -22,12 +22,15 @@ object Main extends App {
     population.toList
   }
 
-  val data = Source.fromResource("datos.csv").getLines().drop(1).map(_.split(",")) // Get table containing calories and weight values from csv file
+  def getScores(population: List[Seq[Int]]): List[Int] = {
+    val scores = new ListBuffer[Int]()
+    for (individual <- population) {
+
+    }
+    scores.toList
+  }
 
   val population = generatePopulation(4, 8)
 
-  for (item <- data) {
-    item foreach println
-  }
-  println(population)
+  println(f"Initial population: ${population}")
 }
