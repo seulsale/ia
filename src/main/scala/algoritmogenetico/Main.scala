@@ -1,36 +1,15 @@
 package algoritmogenetico
 
-import scala.collection.mutable.ListBuffer
-import scala.io.Source
 import scala.util.Random
 
+/**
+ * This implementation tries to discover the backpack with the most calories and the lesser weight in {t} iterations.
+ *
+ */
 object Main extends App {
+  val initialPopulation = new Population(Population.createPopulation(4, 8))
+  println(f"Initial population: $initialPopulation")
 
-  /**
-   * Generates a List of length individuals containing sequences of length chromosomes containing values between 0 and 1.
-   *
-   * @param individuals the size of the population
-   * @param chromosomes the quantity of chromosomes per individual
-   */
-  def generatePopulation(individuals: Int, chromosomes: Int): List[Seq[Int]] = {
-    val population = new ListBuffer[Seq[Int]]()
-    for (individual <- 1 to individuals) {
-      population += Seq.fill(chromosomes) {
-        Random.between(0, 2)
-      }
-    }
-    population.toList
-  }
-
-  def getScores(population: List[Seq[Int]]): List[Int] = {
-    val scores = new ListBuffer[Int]()
-    for (individual <- population) {
-
-    }
-    scores.toList
-  }
-
-  val population = generatePopulation(4, 8)
-
-  println(f"Initial population: ${population}")
+  var currentBest = initialPopulation.getBest
+  print(currentBest)
 }
