@@ -1,6 +1,6 @@
 package algoritmogenetico
 
-class Backpack(val items: Seq[Int], var calF: Double = 0, var weiF: Double = 0) {
+class Backpack(val items: Seq[Int], var calF: Double = 0.0, var weiF: Double = 0.0, var totalF: Double = 0.0) {
   def caloriesFitness(totalCalories: Double): Double = {
     calF = DataTable.getTotalCalories(items) / totalCalories
     calF
@@ -12,7 +12,8 @@ class Backpack(val items: Seq[Int], var calF: Double = 0, var weiF: Double = 0) 
   }
 
   def totalFitness(totalCalories: Double, totalWeight: Double): Double = {
-    caloriesFitness(totalCalories) + weightFitness(totalWeight)
+    totalF = caloriesFitness(totalCalories) + weightFitness(totalWeight)
+    totalF
   }
 
   override def toString: String = {
