@@ -3,7 +3,7 @@ package algoritmogenetico
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-class Population(population: List[Backpack]) {
+class Population(val population: List[Backpack]) {
   def getCalories: Double = {
     var calories = 0.0
     for (individual <- population) {
@@ -57,8 +57,15 @@ object Population {
     population.toList
   }
 
-  def crossIndividuals(ind1: Backpack, ind2: Backpack, crossoverIndex: Int): (Backpack, Backpack) = {
-    // implement
-    (ind1, ind2)
+  def newPopulationByCrossing(population: List[Backpack], crossing: Int): Population = {
+    val sortedByWeighing = population.sortBy(_.totalF)
+    var newPopulation = new ListBuffer[Backpack]()
+    var start = 0
+    while (start < population.length ) {
+      newPopulation += new Backpack(sortedByWeighing(start).items.take(crossing) ++ sortedByWeighing(start + 1).items.drop(crossing))
+      newPopulation += new Backpack(sortedByWeighing(start).items.drop(crossing) ++ sortedByWeighing(start + 1).items.take(crossing))
+      start += 2
+    }
+    new Population(newPopulation.toList)
   }
 }
