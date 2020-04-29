@@ -13,13 +13,19 @@ object DataTable {
     data(index)(2)
   }
 
-  def getTotalWeight: Double = {
-    val weights = data.map(_(2))
-    weights.sum
+  def getTotalWeight(items: Seq[Int]): Double = {
+    var weight = 0.0
+    items.zipWithIndex.foreach { case (item, index) =>
+      if (item == 1) weight += DataTable.getWeight(index)
+    }
+    weight
   }
 
-  def getTotalCalories: Double = {
-    val calories = data.map(_(1))
-    calories.sum
+  def getTotalCalories(items: Seq[Int]): Double = {
+    var calories = 0.0
+    items.zipWithIndex.foreach { case (item, index) =>
+      if (item == 1) calories += DataTable.getCalories(index)
+    }
+    calories
   }
 }
