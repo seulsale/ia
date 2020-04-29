@@ -3,11 +3,11 @@ package algoritmogenetico
 import org.scalatest.FunSuite
 
 class DataTableTest extends FunSuite{
-  test("Sum weights of table") {
-    assert(DataTable.getTotalWeight == 2.9)
+  test("Sum weight of individual") {
+    assert(DataTable.getTotalWeight(Seq(0, 1, 0, 1, 1, 1, 1, 0)) == 2.1)
   }
-  test("Sum calories of table") {
-    assert(DataTable.getTotalCalories == 2400.0)
+  test("Sum calories of individual") {
+    assert(DataTable.getTotalCalories(Seq(0, 1, 1, 1, 0, 0, 0, 0)) == 1200.0)
   }
   test("Get weight from index") {
     assert(DataTable.getWeight(5) == 0.4)
