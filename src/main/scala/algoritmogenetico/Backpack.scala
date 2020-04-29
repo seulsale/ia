@@ -19,10 +19,11 @@ class Backpack(val items: Seq[Int], var calF: Double = 0.0, var weiF: Double = 0
   override def toString: String = {
     f"""
        |$items
+       |weight: ${DataTable.getTotalWeight(items)}
+       |calories: ${DataTable.getTotalCalories(items)}
        |weightFitness: $weiF
        |caloriesFitness: $calF
-       |calories: ${DataTable.getTotalCalories(items)}
-       |weight: ${DataTable.getTotalWeight(items)}
+       |totalFitness: $totalF
        |"""".stripMargin
   }
 }

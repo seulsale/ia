@@ -8,10 +8,10 @@ import scala.util.Random
  */
 object Main extends App {
   var population = new Population(Population.createPopulation(4, 8))
-  println(f"Initial population: $population")
+  println(f"Initial population: \n$population")
 
   var currentBest = population.getBest
-  print(currentBest)
+  print(f"Initial best: $currentBest")
 
   var p = 0
   val limit = 50
@@ -21,6 +21,7 @@ object Main extends App {
     val newBest = population.getBest
 
     // TODO: Implement comparison function, total fitness is used temporarily
+    // Get difference between weight and calories with restrictions
     if (currentBest.totalF < newBest.totalF) {
       currentBest = newBest
     }

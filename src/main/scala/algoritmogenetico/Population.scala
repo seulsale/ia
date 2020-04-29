@@ -35,8 +35,8 @@ class Population(val population: List[Backpack]) {
 
   override def toString: String = {
     var str = ""
-    population.foreach(item => {
-      str += f"${item.toString}\n"
+    population.zipWithIndex.foreach( { case(item, index) =>
+      str += f"\n#### Individual ${index + 1} ####${item.toString}"
     })
     str
   }
