@@ -7,7 +7,7 @@ import scala.util.Random
  *
  */
 object Main extends App {
-  var population = new Population(Population.createPopulation(4, 8))
+  var population = new Population(Population.createPopulation(8, 20))
   println(f"Initial population: \n$population")
 
   var currentBest: Option[Knapsack] = population.getBest(2.0, 1500.0) match {
