@@ -2,7 +2,7 @@ package algoritmogenetico
 
 import scala.util.Random
 
-class Backpack(var items: Seq[Int], var calF: Double = 0.0, var weiF: Double = 0.0, var totalF: Double = 0.0) {
+class Knapsack(var items: Seq[Int], var calF: Double = 0.0, var weiF: Double = 0.0, var totalF: Double = 0.0) {
   mutation()
 
   def mutation(): Unit = {

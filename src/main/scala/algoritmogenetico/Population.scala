@@ -3,7 +3,7 @@ package algoritmogenetico
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
-class Population(val population: List[Backpack]) {
+class Population(val population: List[Knapsack]) {
   population.foreach(_.totalFitness(getCalories, getWeight))
 
   /**
@@ -40,8 +40,8 @@ class Population(val population: List[Backpack]) {
    * @param minCalories minimum calories allowed
    * @return
    */
-  def getBest(maxWeight: Double, minCalories: Double): Option[Backpack] = {
-    var afterConstraints = ListBuffer[Backpack]()
+  def getBest(maxWeight: Double, minCalories: Double): Option[Knapsack] = {
+    var afterConstraints = ListBuffer[Knapsack]()
 
     population.foreach(backpack => {
       if (DataTable.getTotalWeight(backpack.items) < maxWeight
@@ -49,7 +49,7 @@ class Population(val population: List[Backpack]) {
     })
     var bestIndex = 0
     var mostCalories = 0.0
-    var result: Option[Backpack] = None
+    var result: Option[Knapsack] = None
     if (afterConstraints.toList.nonEmpty) {
       afterConstraints.toList.zipWithIndex.foreach { case (backpack, index) =>
         val calories: Double = DataTable.getTotalCalories(backpack.items)
@@ -79,23 +79,23 @@ object Population {
    * @param individuals the size of the population
    * @param chromosomes the quantity of chromosomes per individual
    */
-  def createPopulation(individuals: Int, chromosomes: Int): List[Backpack] = {
-    val population = new ListBuffer[Backpack]()
+  def createPopulation(individuals: Int, chromosomes: Int): List[Knapsack] = {
+    val population = new ListBuffer[Knapsack]()
     for (individual <- 1 to individuals) {
-      population += new Backpack(Seq.fill(chromosomes) {
+      population += new Knapsack(Seq.fill(chromosomes) {
         Random.between(0, 2)
       })
     }
     population.toList
   }
 
-  def newPopulationByCrossing(population: List[Backpack], crossing: Int): Population = {
+  def newPopulationByCrossing(population: List[Knapsack], crossing: Int): Population = {
     val sortedByWeighing = population.sortBy(_.totalF)
-    var newPopulation = new ListBuffer[Backpack]()
+    var newPopulation = new ListBuffer[Knapsack]()
     var start = 0
     while (start < population.length) {
-      newPopulation += new Backpack(sortedByWeighing(start).items.take(crossing) ++ sortedByWeighing(start + 1).items.drop(crossing))
-      newPopulation += new Backpack(sortedByWeighing(start).items.drop(crossing) ++ sortedByWeighing(start + 1).items.take(crossing))
+      newPopulation += new Knapsack(sortedByWeighing(start).items.take(crossing) ++ sortedByWeighing(start + 1).items.drop(crossing))
+      newPopulation += new Knapsack(sortedByWeighing(start).items.drop(crossing) ++ sortedByWeighing(start + 1).items.take(crossing))
       start += 2
     }
     new Population(newPopulation.toList)

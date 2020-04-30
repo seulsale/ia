@@ -10,7 +10,7 @@ object Main extends App {
   var population = new Population(Population.createPopulation(4, 8))
   println(f"Initial population: \n$population")
 
-  var currentBest: Option[Backpack] = population.getBest(2.0, 1500.0) match {
+  var currentBest: Option[Knapsack] = population.getBest(2.0, 1500.0) match {
     case Some(backpack) => Some(backpack)
     case None =>
       println("Not individual in the current population meets te given requirements. Try again.")
@@ -24,7 +24,7 @@ object Main extends App {
   while (p < limit) {
     println(f"##### ${p+1}th iteration #####")
 
-    val newBest: Option[Backpack] = population.getBest(2.0, 1500.0)
+    val newBest: Option[Knapsack] = population.getBest(2.0, 1500.0)
 
     if (newBest.nonEmpty) {
       if (DataTable.getTotalCalories(newBest.get.items) > DataTable.getTotalCalories(currentBest.get.items)) currentBest = Some(newBest.get)
