@@ -76,13 +76,13 @@ object Population {
   /**
    * Generates a List of length individuals containing sequences of length chromosomes containing values between 0 and 1.
    *
-   * @param individuals the size of the population
-   * @param chromosomes the quantity of chromosomes per individual
+   * @param chromosomes the individuals of the population
+   * @param genes quantity of genes per chromosome
    */
-  def createPopulation(individuals: Int, chromosomes: Int): List[Knapsack] = {
+  def createPopulation(chromosomes: Int, genes: Int): List[Knapsack] = {
     val population = new ListBuffer[Knapsack]()
-    for (individual <- 1 to individuals) {
-      population += new Knapsack(Seq.fill(chromosomes) {
+    for (individual <- 1 to chromosomes) {
+      population += new Knapsack(Seq.fill(genes) {
         Random.between(0, 2)
       })
     }
