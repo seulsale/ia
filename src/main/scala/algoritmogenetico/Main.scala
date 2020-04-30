@@ -10,7 +10,13 @@ object Main extends App {
   var population = new Population(Population.createPopulation(4, 8))
   println(f"Initial population: \n$population")
 
-  var currentBest = population.getBest
+  var currentBest: Option[Backpack] = population.getBest(2.0, 1500.0) match {
+    case Some(backpack) => Some(backpack)
+    case None =>
+      println("Not individual in the current population meets te given requirements. Try again.")
+      None
+  }
+  if (currentBest.isEmpty) sys.exit()
   print(f"Initial best: $currentBest")
 
   var p = 0
@@ -18,12 +24,10 @@ object Main extends App {
   while (p < limit) {
     println(f"##### ${p+1}th iteration #####")
 
-    val newBest = population.getBest
+    val newBest: Option[Backpack] = population.getBest(2.0, 1500.0)
 
-    // TODO: Implement comparison function, total fitness is used temporarily
-    // Get difference between weight and calories with restrictions
-    if (currentBest.totalF < newBest.totalF) {
-      currentBest = newBest
+    if (newBest.nonEmpty) {
+      if (DataTable.getTotalCalories(newBest.get.items) > DataTable.getTotalCalories(currentBest.get.items)) currentBest = Some(newBest.get)
     }
 
     population = Population.newPopulationByCrossing(population.population, Random.between(1, 7))
@@ -31,5 +35,5 @@ object Main extends App {
     p += 1
   }
 
-  println(f"The best individual is $currentBest")
+  println(f"The best individual is ${currentBest.get}")
 }
