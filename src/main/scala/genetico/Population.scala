@@ -1,4 +1,4 @@
-package algoritmogenetico
+package genetico
 
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
