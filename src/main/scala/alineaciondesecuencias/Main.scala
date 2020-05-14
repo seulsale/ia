@@ -10,6 +10,7 @@ object Main extends App {
 
   println(f"Initial similarity ${Population.getSimilarity(human, chimpanzee)}")
   val population = Population.createPopulation(human, chimpanzee, 10)
+  println(f"Populations created${population.length / 2}")
   population.foreach(list => {
     println(list)
   })
@@ -26,18 +27,22 @@ object Main extends App {
 object Population {
   def createPopulation(gen1: List[Char], gen2: List[Char], quantity: Int): List[List[Char]] = {
     var population = ListBuffer[List[Char]]()
+    var currentInd1 = gen1
+    var currentInd2 = gen2
     for (i <- 1 to quantity) {
       val (ind1, ind2) = crossPopulations(gen1, gen2)
-      population.addOne(ind1)
-      population.addOne(ind2)
+      currentInd1 = mutation(ind1, 1) // TODO: Randomly mutate
+      currentInd2 = mutation(ind2, 1)
+      population.addOne(currentInd1)
+      population.addOne(currentInd2)
     }
     population.toList
   }
 
   def crossPopulations(ind1: List[Char], ind2: List[Char]): (List[Char], List[Char]) = {
     val crossPoint = Random.between(0, getMinLength(ind1, ind2))
-    val firstIndividual = getFirst(mutation(ind1, 1), crossPoint) ++ getLast(mutation(ind2, 1), crossPoint)
-    val secondIndividual = getLast(mutation(ind1, 1), crossPoint) ++ getFirst(mutation(ind2, 1), crossPoint)
+    val firstIndividual = getFirst(ind1, crossPoint) ++ getLast(ind2, crossPoint)
+    val secondIndividual = getLast(ind1, crossPoint) ++ getFirst(ind2, crossPoint)
     (firstIndividual, secondIndividual)
   }
 
@@ -46,9 +51,9 @@ object Population {
     val crossGen = ListBuffer[Char]()
     while (i < crossPoint) {
       if (gen(i) != '-') {
-        crossGen.addOne(gen(i))
         i += 1
       }
+      crossGen.addOne(gen(i))
     }
     crossGen.toList
   }
@@ -58,9 +63,9 @@ object Population {
     val crossGen = ListBuffer[Char]()
     while (i >= crossPoint) {
       if (gen(i) != '-') {
-        crossGen.addOne(gen(i))
         i -= 1
       }
+      crossGen.addOne(gen(i))
     }
     crossGen.toList
   }
