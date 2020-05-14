@@ -8,44 +8,57 @@ object Main extends App {
   var human = Source.fromResource("secuencias/humano/env - HIV1H.txt").toList
   var chimpanzee = Source.fromResource("secuencias/chimpance/env - HIV1S.txt").toList
 
-  println(f"Initial similarity ${Population.getSimilarity(human, chimpanzee)}")
-  val population = Population.createPopulation(human, chimpanzee, 10)
-  println(f"Populations created${population.length / 2}")
-  population.foreach(list => {
-    println(list)
-  })
+  var bestPopulation = (human, chimpanzee)
+  var bestSimilarity = Population.getSimilarity(human, chimpanzee)
 
+  println(f"Initial Population: $bestPopulation")
+  println(f"Initial similarity: $bestSimilarity")
 
   var limit = 50
   var p = 1
   while (p < limit) {
+    println("Creating new population...")
+    val (newInd1, newInd2) = Population.crossPopulation(human, chimpanzee)
+
+    println("Getting the best...")
+    if (Population.getSimilarity(newInd1, newInd2) > bestSimilarity) {
+      println("The new population is better")
+      bestPopulation = (newInd1, newInd2)
+    } else {
+      println("The current population is better")
+    }
 
     p += 1
   }
+  println(f"Best population of $limit iterations is: $bestPopulation \nwith ${bestSimilarity*100}%% of similarity.")
 }
 
 object Population {
-  def createPopulation(gen1: List[Char], gen2: List[Char], quantity: Int): List[List[Char]] = {
-    val population = ListBuffer[List[Char]]()
-    var currentInd1 = gen1
-    var currentInd2 = gen2
-    for (i <- 1 to quantity) {
-      val (ind1, ind2) = crossPopulations(gen1, gen2)
-      population.addOne(currentInd1)
-      population.addOne(currentInd2)
-    }
-    population.toList
-  }
+//  def createPopulation(gen1: List[Char], gen2: List[Char], quantity: Int): List[List[Char]] = {
+//    val population = ListBuffer[List[Char]]()
+//    var currentInd1 = gen1
+//    var currentInd2 = gen2
+//    for (i <- 1 to quantity) {
+//      val (ind1, ind2) = crossPopulation(gen1, gen2)
+//      currentInd1 = ind1
+//      currentInd2 = ind2
+//      population.addOne(currentInd1)
+//      population.addOne(currentInd2)
+//    }
+//    population.toList
+//  }
 
-  def crossPopulations(ind1: List[Char], ind2: List[Char]): (List[Char], List[Char]) = {
+  def crossPopulation(ind1: List[Char], ind2: List[Char]): (List[Char], List[Char]) = {
     val crossPoint = Random.between(0, getMinLength(ind1, ind2))
     val firstIndividual = getFirst(ind1, crossPoint) ++ getLast(ind2, crossPoint)
     val secondIndividual = getLast(ind1, crossPoint) ++ getFirst(ind2, crossPoint)
+    val mutateFirstInd = mutation(firstIndividual, 5)
+    val mutateSecondInd = mutation(secondIndividual, 5)
     val doesMutate = Random.between(0, 4)
     var result = (firstIndividual, secondIndividual)
-    if (doesMutate == 1) result = (mutation(firstIndividual, 5), secondIndividual)
-    if (doesMutate == 2) result = (firstIndividual, mutation(secondIndividual, 5))
-    if (doesMutate == 3) result = (mutation(firstIndividual, 5), mutation(secondIndividual, 5))
+    if (doesMutate == 1) result = (mutateFirstInd, secondIndividual)
+    if (doesMutate == 2) result = (firstIndividual, mutateSecondInd)
+    if (doesMutate == 3) result = (mutateFirstInd, mutateSecondInd)
     result
   }
 
