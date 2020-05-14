@@ -31,8 +31,6 @@ object Population {
     var currentInd2 = gen2
     for (i <- 1 to quantity) {
       val (ind1, ind2) = crossPopulations(gen1, gen2)
-      currentInd1 = mutation(ind1, 1) // TODO: Randomly mutate
-      currentInd2 = mutation(ind2, 1)
       population.addOne(currentInd1)
       population.addOne(currentInd2)
     }
@@ -43,7 +41,12 @@ object Population {
     val crossPoint = Random.between(0, getMinLength(ind1, ind2))
     val firstIndividual = getFirst(ind1, crossPoint) ++ getLast(ind2, crossPoint)
     val secondIndividual = getLast(ind1, crossPoint) ++ getFirst(ind2, crossPoint)
-    (firstIndividual, secondIndividual)
+    val doesMutate = Random.between(0, 4)
+    var result = (firstIndividual, secondIndividual)
+    if (doesMutate == 1) result = (mutation(firstIndividual, 5), secondIndividual)
+    if (doesMutate == 2) result = (firstIndividual, mutation(secondIndividual, 5))
+    if (doesMutate == 3) result = (mutation(firstIndividual, 5), mutation(secondIndividual, 5))
+    result
   }
 
   /**
