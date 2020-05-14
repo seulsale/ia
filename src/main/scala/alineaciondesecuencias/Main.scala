@@ -15,7 +15,7 @@ object Main extends App {
   println(f"Initial similarity: $bestSimilarity")
 
   var bestPopulationOfBatch = bestPopulation
-  var bestSimilarityOfBatch: = 0.0
+  var bestSimilarityOfBatch = 0.0
 
   var limit = 100
   var p = 1
