@@ -9,6 +9,10 @@ object Main extends App {
   var chimpanzee = Source.fromResource("secuencias/chimpance/env - HIV1S.txt").toList
 
   println(f"Initial similarity ${Population.getSimilarity(human, chimpanzee)}")
+  val population = Population.createPopulation(human, chimpanzee, 10)
+  population.foreach(list => {
+    println(list)
+  })
 
 
   var limit = 50
@@ -32,8 +36,8 @@ object Population {
 
   def crossPopulations(ind1: List[Char], ind2: List[Char]): (List[Char], List[Char]) = {
     val crossPoint = Random.between(0, getMinLength(ind1, ind2))
-    val firstIndividual = getFirst(ind1, crossPoint) ++ getLast(ind2, crossPoint)
-    val secondIndividual = getLast(ind1, crossPoint) ++ getFirst(ind2, crossPoint)
+    val firstIndividual = getFirst(mutation(ind1, 1), crossPoint) ++ getLast(mutation(ind2, 1), crossPoint)
+    val secondIndividual = getLast(mutation(ind1, 1), crossPoint) ++ getFirst(mutation(ind2, 1), crossPoint)
     (firstIndividual, secondIndividual)
   }
 
@@ -41,7 +45,7 @@ object Population {
     var i = 0
     val crossGen = ListBuffer[Char]()
     while (i < crossPoint) {
-      if (gen(i) !== 'c') {
+      if (gen(i) != '-') {
         crossGen.addOne(gen(i))
         i += 1
       }
@@ -53,9 +57,9 @@ object Population {
     var i = gen.length - 1
     val crossGen = ListBuffer[Char]()
     while (i >= crossPoint) {
-      if (gen(i) !== 'c') {
+      if (gen(i) != '-') {
         crossGen.addOne(gen(i))
-        i += 1
+        i -= 1
       }
     }
     crossGen.toList
