@@ -87,15 +87,15 @@ object Population {
    * @return a list of characters up to crossPoint skipping dashes
    */
   def getLast(gen: List[Char], crossPoint: Int): List[Char] = {
-    var i = gen.length - 1
+    var i = crossPoint
     val crossGen = ListBuffer[Char]()
-    while (i >= crossPoint) {
+    while (i <= gen.length-1) {
       if (gen(i) != '-') {
-        i -= 1
+        i += 1
       }
       crossGen.addOne(gen(i))
     }
-    crossGen.toList.reverse
+    crossGen.toList
   }
 
   /**
