@@ -14,7 +14,10 @@ object Main extends App {
   println(f"Initial Population: $bestPopulation")
   println(f"Initial similarity: $bestSimilarity")
 
-  var limit = 50
+  var bestPopulationOfBatch = bestPopulation
+  var bestSimilarityOfBatch: = 0.0
+
+  var limit = 100
   var p = 1
   while (p < limit) {
     println("Creating new population...")
@@ -23,6 +26,10 @@ object Main extends App {
     println("Getting the best...")
     val newSimilarity = Population.getSimilarity(newInd1, newInd2)
     println(f"The new similarity is $newSimilarity")
+    if (newSimilarity > bestSimilarityOfBatch) {
+      bestSimilarityOfBatch = newSimilarity
+      bestPopulationOfBatch = (newInd1, newInd2)
+    }
     if (newSimilarity > bestSimilarity) {
       println("The new population is better")
       bestPopulation = (newInd1, newInd2)
@@ -51,12 +58,18 @@ object Population {
 //    population.toList
 //  }
 
+  /**
+   * Generates a new population
+   * @param ind1 first individual of the population
+   * @param ind2 second individual of the population
+   * @return a new population which individuals may or may not be mutated
+   */
   def crossPopulation(ind1: List[Char], ind2: List[Char]): (List[Char], List[Char]) = {
     val crossPoint = Random.between(0, getMinLength(ind1, ind2))
     val firstIndividual = getFirst(ind1, crossPoint) ++ getLast(ind2, crossPoint)
     val secondIndividual = getLast(ind1, crossPoint) ++ getFirst(ind2, crossPoint)
-    val mutateFirstInd = mutation(firstIndividual, 5)
-    val mutateSecondInd = mutation(secondIndividual, 5)
+    val mutateFirstInd = mutation(firstIndividual, 25)
+    val mutateSecondInd = mutation(secondIndividual, 25)
     val doesMutate = Random.between(0, 4)
     var result = (firstIndividual, secondIndividual)
     if (doesMutate == 1) result = (mutateFirstInd, secondIndividual)
