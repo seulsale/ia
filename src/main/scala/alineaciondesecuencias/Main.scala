@@ -26,7 +26,7 @@ object Main extends App {
 
 object Population {
   def createPopulation(gen1: List[Char], gen2: List[Char], quantity: Int): List[List[Char]] = {
-    var population = ListBuffer[List[Char]]()
+    val population = ListBuffer[List[Char]]()
     var currentInd1 = gen1
     var currentInd2 = gen2
     for (i <- 1 to quantity) {
@@ -46,6 +46,12 @@ object Population {
     (firstIndividual, secondIndividual)
   }
 
+  /**
+   * Return the first crossPoint characters skipping dashes
+   * @param gen list of characters
+   * @param crossPoint limit of characters for the new list
+   * @return a list of characters up to crossPoint skipping dashes
+   */
   def getFirst(gen: List[Char], crossPoint: Int): List[Char] = {
     var i = 0
     val crossGen = ListBuffer[Char]()
@@ -58,6 +64,12 @@ object Population {
     crossGen.toList
   }
 
+  /**
+   * Return the last crossPoint characters skipping dashes
+   * @param gen list of characters
+   * @param crossPoint limit of characters for the new list
+   * @return a list of characters up to crossPoint skipping dashes
+   */
   def getLast(gen: List[Char], crossPoint: Int): List[Char] = {
     var i = gen.length - 1
     val crossGen = ListBuffer[Char]()
@@ -67,7 +79,7 @@ object Population {
       }
       crossGen.addOne(gen(i))
     }
-    crossGen.toList
+    crossGen.toList.reverse
   }
 
   /**
