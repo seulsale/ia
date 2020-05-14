@@ -21,9 +21,12 @@ object Main extends App {
     val (newInd1, newInd2) = Population.crossPopulation(human, chimpanzee)
 
     println("Getting the best...")
-    if (Population.getSimilarity(newInd1, newInd2) > bestSimilarity) {
+    val newSimilarity = Population.getSimilarity(newInd1, newInd2)
+    println(f"The new similarity is $newSimilarity")
+    if (newSimilarity > bestSimilarity) {
       println("The new population is better")
       bestPopulation = (newInd1, newInd2)
+      bestSimilarity = newSimilarity
     } else {
       println("The current population is better")
     }
@@ -109,7 +112,11 @@ object Population {
     var newGen: List[Char] = gen.map(c => c)
     for(i <- 1 to mutations) {
       val index = Random.between(0, newGen.length)
-      newGen = newGen.take(index) ++ ('-' :: newGen.drop(index))
+      if (newGen(index) == '-') {
+        newGen = newGen.take(index) ++ newGen.drop(index + 1) // if current index is a dash, remove it
+      } else {
+        newGen = newGen.take(index) ++ ('-' :: newGen.drop(index)) // else add a dash at current index
+      }
     }
     newGen
   }
