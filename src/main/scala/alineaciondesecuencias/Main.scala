@@ -1,5 +1,6 @@
 package alineaciondesecuencias
 
+import scala.collection.mutable.ListBuffer
 import scala.io.Source
 import scala.util.Random
 
@@ -8,7 +9,7 @@ object Main extends App {
   var chimpanzee = Source.fromResource("secuencias/chimpance/env - HIV1S.txt").toList
 
   println(f"Initial similarity ${Population.getSimilarity(human, chimpanzee)}")
-  println(f"Similarity after mutation ${Population.getSimilarity(Population.mutation(human, 2), Population.mutation(chimpanzee, 1))}")
+
 
   var limit = 50
   var p = 1
@@ -19,9 +20,45 @@ object Main extends App {
 }
 
 object Population {
-  def crossPopulations(gen1: List[Char], gen2: List[Char]): (List[Char], List[Char]) = {
-    // TODO: Missing implementation
-    (gen1, gen2)
+  def createPopulation(gen1: List[Char], gen2: List[Char], quantity: Int): List[List[Char]] = {
+    var population = ListBuffer[List[Char]]()
+    for (i <- 1 to quantity) {
+      val (ind1, ind2) = crossPopulations(gen1, gen2)
+      population.addOne(ind1)
+      population.addOne(ind2)
+    }
+    population.toList
+  }
+
+  def crossPopulations(ind1: List[Char], ind2: List[Char]): (List[Char], List[Char]) = {
+    val crossPoint = Random.between(0, getMinLength(ind1, ind2))
+    val firstIndividual = getFirst(ind1, crossPoint) ++ getLast(ind2, crossPoint)
+    val secondIndividual = getLast(ind1, crossPoint) ++ getFirst(ind2, crossPoint)
+    (firstIndividual, secondIndividual)
+  }
+
+  def getFirst(gen: List[Char], crossPoint: Int): List[Char] = {
+    var i = 0
+    val crossGen = ListBuffer[Char]()
+    while (i < crossPoint) {
+      if (gen(i) !== 'c') {
+        crossGen.addOne(gen(i))
+        i += 1
+      }
+    }
+    crossGen.toList
+  }
+
+  def getLast(gen: List[Char], crossPoint: Int): List[Char] = {
+    var i = gen.length - 1
+    val crossGen = ListBuffer[Char]()
+    while (i >= crossPoint) {
+      if (gen(i) !== 'c') {
+        crossGen.addOne(gen(i))
+        i += 1
+      }
+    }
+    crossGen.toList
   }
 
   /**
@@ -41,14 +78,14 @@ object Population {
   }
 
   /**
-   * Calculates the minimum length of two lists
+   * Calculates the minimum length of two lists ignoring dashes
    * @param gen1 first gen
    * @param gen2 second gen
    * @return the minimum length of two lists
    */
   def getMinLength(gen1: List[Char], gen2: List[Char]): Int = {
-    val len1 = gen1.length
-    val len2 = gen2.length
+    val len1 = gen1.filterNot(c => c == '-').length
+    val len2 = gen2.filterNot(c => c == '-').length
     if (len1 < len2) len1 else len2
   }
 
