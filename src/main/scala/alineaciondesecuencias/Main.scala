@@ -8,7 +8,7 @@ object Main extends App {
   var human = Source.fromResource("secuencias/humano/env - HIV1H.txt").toList // .split("")
   var chimpanzee = Source.fromResource("secuencias/chimpance/env - HIV1S.txt").toList
 
-  val population: List[(List[Char], List[Char])] = Population.createPopulation(human, chimpanzee, 5)
+  var population: List[(List[Char], List[Char])] = Population.createPopulation(human, chimpanzee, 6)
 
   var bestFitness = Population.getSimilarity(population.head._1, population.head._2)
   var bestPopulation = population.head
@@ -22,8 +22,12 @@ object Main extends App {
         bestFitness = currentFitness
         bestPopulation = population(index)
       }
-
+      println(f"---------Fitness actual: $currentFitness---------")
     }
+
+    population = Population.crossPopulation(population)
+
+    println("---------Nueva generación---------")
 
     p += 1
   }
@@ -44,68 +48,73 @@ object Population {
 
   /**
    * Generates a new population
+   *
    * @param population list of individuals
    * @return a new population which individuals may or may not be mutated
    */
   def crossPopulation(population: List[(List[Char], List[Char])]): List[(List[Char], List[Char])] = {
     val newPopulation = ListBuffer[(List[Char], List[Char])]()
-
     var start = 0
     while (start < population.length) {
+      val crossing = Random.between(0, getMinLength(population(start)._1, population(start + 1)._1))
+      val crossing2 = Random.between(0, getMinLength(population(start)._2, population(start + 1)._2))
 
+      newPopulation.addOne((getFirst(population(start)._1, crossing) ++ getLast(population(start + 1)._1, crossing),
+        getLast(population(start)._1, crossing) ++ getFirst(population(start + 1)._1, crossing)))
+      newPopulation.addOne((getFirst(population(start)._2, crossing2) ++ getLast(population(start + 1)._2, crossing2),
+        getLast(population(start)._2, crossing2) ++ getFirst(population(start + 1)._2, crossing2)))
 
       start += 2
     }
 
-    population
+    newPopulation.toList
   }
 
   /**
    * Return the first crossPoint characters skipping dashes
-   * @param gen list of characters
+   *
+   * @param gen        list of characters
    * @param crossPoint limit of characters for the new list
    * @return a list of characters up to crossPoint skipping dashes
    */
   def getFirst(gen: List[Char], crossPoint: Int): List[Char] = {
-    var i = 0
+    var index = 0
+    var char = 0
     val crossGen = ListBuffer[Char]()
-    while (i < crossPoint) {
-      if (gen(i) != '-') {
-        i += 1
-      }
-      crossGen.addOne(gen(i))
-    }
-    crossGen.toList
+
+    gen.take(crossPoint)
   }
 
   /**
    * Return the last crossPoint characters skipping dashes
-   * @param gen list of characters
+   *
+   * @param gen        list of characters
    * @param crossPoint limit of characters for the new list
    * @return a list of characters up to crossPoint skipping dashes
    */
   def getLast(gen: List[Char], crossPoint: Int): List[Char] = {
     var i = gen.length - 1
     val crossGen = ListBuffer[Char]()
-    while (i >= crossPoint) {
-      if (gen(i) != '-') {
-        i -= 1
-      }
-      crossGen.addOne(gen(i))
-    }
-    crossGen.toList.reverse
+//    while (i >= crossPoint) {
+//      if (gen(i) != '-') {
+//        i -= 1
+//      }
+//      crossGen.addOne(gen(i))
+//    }
+    gen.drop(crossPoint)
   }
 
   /**
    * Add dashes between the list of chars, the quantity of dashes depends on the percentage given
-   * @param gen list of chars
+   *
+   * @param gen        list of chars
    * @param percentage percentage number
    * @return a list containing random dashes in between
    */
   def mutation(gen: List[Char], percentage: Int): List[Char] = {
-    val mutations = Math.round(gen.length/100*percentage.toFloat)
+    val mutations = Math.round(gen.length / 100 * percentage.toFloat)
     var newGen: List[Char] = gen.map(c => c)
-    for(i <- 1 to mutations) {
+    for (i <- 1 to mutations) {
       val index = Random.between(0, newGen.length)
       if (newGen(index) == '-') {
         newGen = newGen.take(index) ++ newGen.drop(index + 1) // if current index is a dash, remove it
@@ -118,6 +127,7 @@ object Population {
 
   /**
    * Calculates the minimum length of two lists ignoring dashes
+   *
    * @param gen1 first gen
    * @param gen2 second gen
    * @return the minimum length of two lists
@@ -130,6 +140,7 @@ object Population {
 
   /**
    * Calculates percentage of similarity between two sequences
+   *
    * @param gen1 List of characters of the first gen
    * @param gen2 List of characters of the second gen
    * @return the percentage of similarity ranging from 0 to 1
