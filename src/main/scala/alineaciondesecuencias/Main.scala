@@ -5,77 +5,59 @@ import scala.io.Source
 import scala.util.Random
 
 object Main extends App {
-  var human = Source.fromResource("secuencias/humano/env - HIV1H.txt").toList
+  var human = Source.fromResource("secuencias/humano/env - HIV1H.txt").toList // .split("")
   var chimpanzee = Source.fromResource("secuencias/chimpance/env - HIV1S.txt").toList
 
-  var bestPopulation = (human, chimpanzee)
-  var bestSimilarity = Population.getSimilarity(human, chimpanzee)
+  val population: List[(List[Char], List[Char])] = Population.createPopulation(human, chimpanzee, 5)
 
-  println(f"Initial Population: $bestPopulation")
-  println(f"Initial similarity: $bestSimilarity")
-
-  var bestPopulationOfBatch = bestPopulation
-  var bestSimilarityOfBatch = 0.0
+  var bestFitness = Population.getSimilarity(population.head._1, population.head._2)
+  var bestPopulation = population.head
 
   var limit = 100
   var p = 1
   while (p < limit) {
-    println("Creating new population...")
-    val (newInd1, newInd2) = Population.crossPopulation(human, chimpanzee)
+    for ((ind, index) <- population.zipWithIndex) {
+      val currentFitness = Population.getSimilarity(ind._1, ind._2)
+      if (currentFitness > bestFitness) {
+        bestFitness = currentFitness
+        bestPopulation = population(index)
+      }
 
-    println("Getting the best...")
-    val newSimilarity = Population.getSimilarity(newInd1, newInd2)
-    println(f"The new similarity is $newSimilarity")
-    if (newSimilarity > bestSimilarityOfBatch) {
-      bestSimilarityOfBatch = newSimilarity
-      bestPopulationOfBatch = (newInd1, newInd2)
-    }
-    if (newSimilarity > bestSimilarity) {
-      println("The new population is better")
-      bestPopulation = (newInd1, newInd2)
-      bestSimilarity = newSimilarity
-    } else {
-      println("The current population is better")
     }
 
     p += 1
   }
-  println(f"Best population of $limit iterations is: $bestPopulation \nwith ${bestSimilarity*100}%% of similarity.")
+
+  println(f"Best Fitness: $bestFitness")
+  println(f"Best Population: $bestPopulation")
 }
 
 object Population {
-//  def createPopulation(gen1: List[Char], gen2: List[Char], quantity: Int): List[List[Char]] = {
-//    val population = ListBuffer[List[Char]]()
-//    var currentInd1 = gen1
-//    var currentInd2 = gen2
-//    for (i <- 1 to quantity) {
-//      val (ind1, ind2) = crossPopulation(gen1, gen2)
-//      currentInd1 = ind1
-//      currentInd2 = ind2
-//      population.addOne(currentInd1)
-//      population.addOne(currentInd2)
-//    }
-//    population.toList
-//  }
+  def createPopulation(gen1: List[Char], gen2: List[Char], quantity: Int): List[(List[Char], List[Char])] = {
+    val population = ListBuffer[(List[Char], List[Char])]()
+    for (i <- 1 to quantity) { // for i in range(1, quantity)
+      val newInd = (mutation(gen1, 2), mutation(gen2, 2))
+      population.addOne(newInd)
+    }
+    population.toList
+  }
 
   /**
    * Generates a new population
-   * @param ind1 first individual of the population
-   * @param ind2 second individual of the population
+   * @param population list of individuals
    * @return a new population which individuals may or may not be mutated
    */
-  def crossPopulation(ind1: List[Char], ind2: List[Char]): (List[Char], List[Char]) = {
-    val crossPoint = Random.between(0, getMinLength(ind1, ind2))
-    val firstIndividual = getFirst(ind1, crossPoint) ++ getLast(ind2, crossPoint)
-    val secondIndividual = getLast(ind1, crossPoint) ++ getFirst(ind2, crossPoint)
-    val mutateFirstInd = mutation(firstIndividual, 25)
-    val mutateSecondInd = mutation(secondIndividual, 25)
-    val doesMutate = Random.between(0, 4)
-    var result = (firstIndividual, secondIndividual)
-    if (doesMutate == 1) result = (mutateFirstInd, secondIndividual)
-    if (doesMutate == 2) result = (firstIndividual, mutateSecondInd)
-    if (doesMutate == 3) result = (mutateFirstInd, mutateSecondInd)
-    result
+  def crossPopulation(population: List[(List[Char], List[Char])]): List[(List[Char], List[Char])] = {
+    val newPopulation = ListBuffer[(List[Char], List[Char])]()
+
+    var start = 0
+    while (start < population.length) {
+
+
+      start += 2
+    }
+
+    population
   }
 
   /**
@@ -157,7 +139,9 @@ object Population {
     var index: Int = 0
     var same: Int = 0
     while (index < maxLimit) {
-      if (gen1(index) == gen2(index)) same += 1
+      if (gen1(index) != '-' && gen2(index) != '-') {
+        if (gen1(index) == gen2(index)) same += 1
+      }
       index += 1
     }
     same.toFloat / maxLimit
