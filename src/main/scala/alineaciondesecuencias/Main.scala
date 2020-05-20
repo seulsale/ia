@@ -8,12 +8,12 @@ object Main extends App {
   var human = Source.fromResource("secuencias/humano/env - HIV1H.txt").toList // .split("")
   var chimpanzee = Source.fromResource("secuencias/chimpance/env - HIV1S.txt").toList
 
-  var population: List[(List[Char], List[Char])] = Population.createPopulation(human, chimpanzee, 6)
+  var population: List[(List[Char], List[Char])] = Population.createPopulation(human, chimpanzee, 80)
 
   var bestFitness = Population.getSimilarity(population.head._1, population.head._2)
   var bestPopulation = population.head
 
-  var limit = 100
+  var limit = 20
   var p = 1
   while (p < limit) {
     for ((ind, index) <- population.zipWithIndex) {
@@ -57,12 +57,11 @@ object Population {
     var start = 0
     while (start < population.length) {
       val crossing = Random.between(0, getMinLength(population(start)._1, population(start + 1)._1))
-      val crossing2 = Random.between(0, getMinLength(population(start)._2, population(start + 1)._2))
 
       newPopulation.addOne((getFirst(population(start)._1, crossing) ++ getLast(population(start + 1)._1, crossing),
-        getLast(population(start)._1, crossing) ++ getFirst(population(start + 1)._1, crossing)))
-      newPopulation.addOne((getFirst(population(start)._2, crossing2) ++ getLast(population(start + 1)._2, crossing2),
-        getLast(population(start)._2, crossing2) ++ getFirst(population(start + 1)._2, crossing2)))
+        getFirst(population(start)._2, crossing) ++ getLast(population(start + 1)._2, crossing)))
+      newPopulation.addOne((getLast(population(start)._1, crossing) ++ getFirst(population(start + 1)._1, crossing),
+        getLast(population(start)._2, crossing) ++ getFirst(population(start + 1)._2, crossing)))
 
       start += 2
     }
